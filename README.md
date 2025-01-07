@@ -2,6 +2,8 @@
 
 An MCP server providing tools for interacting with the Penumbra blockchain. This server enables privacy-preserving interactions with Penumbra's core features including transaction queries, validator set information, DEX state, and governance proposals.
 
+<a href="https://glama.ai/mcp/servers/21fa1hhrxw"><img width="380" height="200" src="https://glama.ai/mcp/servers/21fa1hhrxw/badge" alt="Penumbra Server MCP server" /></a>
+
 ## Features
 
 ### Current Tools
