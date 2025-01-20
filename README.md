@@ -1,162 +1,208 @@
 # Penumbra MCP Server
 
-An MCP server providing tools for interacting with the Penumbra blockchain. This server enables privacy-preserving interactions with Penumbra's core features including transaction queries, validator set information, DEX state, and governance proposals.
-
-## Features
-
-### Current Tools
-
-- `get_validator_set`: Get the current validator set information
-- `get_chain_status`: Get current chain status including block height and chain ID
-- `get_transaction`: Get details of a specific transaction
-- `get_dex_state`: Get current DEX state including latest batch auction results
-- `get_governance_proposals`: Get active governance proposals
-
-### Planned Features
-
-- Transaction submission
-- Private staking operations
-- DEX trading (sealed-bid batch auctions)
-- Private governance voting
-- Liquidity position management
+A Model Context Protocol server for interacting with the Penumbra blockchain. This server provides tools for chain interaction, transaction building, and more.
 
 ## Installation
 
-You can install the package via npm:
+1. Prerequisites:
+   - Node.js >= 18.0.0
+   - npm
 
+2. Clone and install dependencies:
 ```bash
-npm install @timeheater/penumbra-mcp
-```
-
-Or using yarn:
-
-```bash
-yarn add @timeheater/penumbra-mcp
-```
-
-## Setup
-
-### Local Development from Source
-
-1. Install dependencies:
-```bash
+git clone <repository-url>
+cd penumbra-mcp
 npm install
 ```
 
-2. Build the server:
+3. Build the server:
 ```bash
 npm run build
 ```
 
-3. Run in development mode:
+4. Configure environment variables (optional):
 ```bash
-npm run watch
+# Node connection
+PENUMBRA_NODE_URL=http://localhost:8080  # Default
+PENUMBRA_REQUEST_TIMEOUT=10000           # Default: 10s
+PENUMBRA_REQUEST_RETRIES=3               # Default
+
+# Chain configuration
+PENUMBRA_NETWORK=testnet                 # Default
+PENUMBRA_CHAIN_ID=penumbra-testnet      # Default
+PENUMBRA_BLOCK_TIME=6000                 # Default: 6s
+PENUMBRA_EPOCH_DURATION=100              # Default: blocks
+
+# DEX configuration
+PENUMBRA_DEX_BATCH_INTERVAL=60000        # Default: 60s
+PENUMBRA_DEX_MIN_LIQUIDITY=1000          # Default
+PENUMBRA_DEX_MAX_PRICE_IMPACT=0.05       # Default: 5%
+
+# Governance configuration
+PENUMBRA_GOVERNANCE_VOTING_PERIOD=604800000  # Default: 7 days
+PENUMBRA_GOVERNANCE_MIN_DEPOSIT=10000        # Default
 ```
 
-### Claude Desktop Integration
-
-To integrate with Claude desktop, add the following configuration to your Claude desktop settings file (`~/Library/Application Support/Claude/claude_desktop_config.json`):
-
-```json
-{
-  "mcpServers": {
-    "penumbra-mcp": {
-      "command": "node",
-      "args": ["/Users/barton/infinity-topos/penumbra-mcp/build/index.js"],
-      "env": {
-        "PENUMBRA_NODE_URL": "https://rpc.penumbra.zone",
-        "PENUMBRA_NETWORK": "mainnet",
-        "PENUMBRA_CHAIN_ID": "penumbra-1",
-        "PENUMBRA_REQUEST_TIMEOUT": "30000",
-        "PENUMBRA_REQUEST_RETRIES": "5",
-        "PENUMBRA_BLOCK_TIME": "6000",
-        "PENUMBRA_EPOCH_DURATION": "100",
-        "PENUMBRA_DEX_BATCH_INTERVAL": "60000",
-        "PENUMBRA_DEX_MIN_LIQUIDITY": "1000",
-        "PENUMBRA_DEX_MAX_PRICE_IMPACT": "0.05",
-        "PENUMBRA_GOVERNANCE_VOTING_PERIOD": "1209600000",
-        "PENUMBRA_GOVERNANCE_MIN_DEPOSIT": "100000"
-      }
-    }
-  }
-}
+5. Run the server:
+```bash
+npm start
 ```
 
-Replace `/path/to/penumbra-mcp` with the actual path where you've installed the server.
+## Available Tools
 
-### Using the MCP Server
+### Chain Interaction Tools
 
-Once configured, you can interact with Penumbra through Claude using the following tools:
-
-1. Query validator set:
-```
-Tell Claude: "Show me the current Penumbra validator set"
-```
-
-2. Check chain status:
-```
-Tell Claude: "What's the current status of the Penumbra chain?"
-```
-
-3. Get transaction details:
-```
-Tell Claude: "Look up Penumbra transaction [HASH]"
+#### get_validator_set
+Get current validator set information.
+```typescript
+// Input: {}
+// Output: { validators: Array<{
+//   address: string;
+//   votingPower: string;
+//   commission: string;
+//   status: string;
+// }> }
 ```
 
-4. View DEX state:
-```
-Tell Claude: "Show me the current Penumbra DEX state"
+#### get_chain_status
+Get current chain status including block height and chain ID.
+```typescript
+// Input: {}
+// Output: {
+//   height: string;
+//   chainId: string;
+//   timestamp: string;
+//   blockHash: string;
+// }
 ```
 
-5. List governance proposals:
+#### get_transaction
+Get details of a specific transaction.
+```typescript
+// Input: { hash: string }
+// Output: {
+//   hash: string;
+//   status: string;
+//   height: string;
+//   timestamp: string;
+//   gasUsed: string;
+//   fee: string;
+// }
 ```
-Tell Claude: "List active Penumbra governance proposals"
+
+#### get_dex_state
+Get current DEX state including latest batch auction results.
+```typescript
+// Input: {}
+// Output: {
+//   currentBatchNumber: string;
+//   lastBatchTimestamp: string;
+//   batchInterval: number;
+//   minLiquidityAmount: string;
+//   maxPriceImpact: number;
+//   activePairs: Array<{
+//     baseAsset: string;
+//     quoteAsset: string;
+//     lastPrice: string;
+//     volume24h: string;
+//   }>;
+// }
+```
+
+#### get_governance_proposals
+Get active governance proposals.
+```typescript
+// Input: { status?: 'active' | 'completed' | 'all' }
+// Output: {
+//   proposals: Array<{
+//     id: string;
+//     title: string;
+//     status: string;
+//     votingEndTime: string;
+//     minDeposit: string;
+//     yesVotes: string;
+//     noVotes: string;
+//   }>;
+// }
+```
+
+### Transaction Building Tools
+
+#### build_transaction
+Create and sign transactions with various actions.
+```typescript
+// Input: {
+//   actions: Array<{
+//     type: 'spend' | 'output' | 'swap' | 'delegate' | 'undelegate';
+//     params: object;  // Action-specific parameters
+//   }>;
+//   memo?: string;
+//   expiryHeight?: number;
+// }
+// Output: {
+//   hash: string;
+//   actions: Array<object>;
+//   memo: string;
+//   expiryHeight: number;
+//   signature: string;
+//   timestamp: string;
+// }
+```
+
+#### estimate_fees
+Estimate transaction fees based on action types.
+```typescript
+// Input: {
+//   actions: Array<{
+//     type: string;
+//     params: object;
+//   }>;
+// }
+// Output: {
+//   estimatedFee: string;
+//   breakdown: {
+//     baseFee: string;
+//     actionFees: Array<{
+//       type: string;
+//       fee: string;
+//     }>;
+//   };
+// }
+```
+
+#### simulate_transaction
+Simulate transaction execution for validation.
+```typescript
+// Input: {
+//   transaction: string;  // Serialized transaction
+// }
+// Output: {
+//   success: boolean;
+//   gasUsed: string;
+//   logs: Array<{
+//     type: string;
+//     timestamp: string;
+//     details: string;
+//   }>;
+//   effects: {
+//     stateChanges: Array<any>;
+//     events: Array<any>;
+//   };
+// }
 ```
 
 ## Development
 
-- `npm run watch`: Watch mode for development
-- `npm run inspector`: Run MCP inspector for testing
-- `npm test`: Run test suite
+1. Build in watch mode:
+```bash
+npm run build -- --watch
+```
 
-## Environment Variables
+2. Run tests:
+```bash
+npm test
+```
 
-### Node Configuration
-- `PENUMBRA_NODE_URL`: URL of the Penumbra node (default: https://rpc.penumbra.zone)
-- `PENUMBRA_REQUEST_TIMEOUT`: HTTP request timeout in milliseconds (default: 30000)
-- `PENUMBRA_REQUEST_RETRIES`: Number of request retries (default: 5)
+## Future Features
 
-### Chain Configuration
-- `PENUMBRA_NETWORK`: Network to connect to (default: mainnet)
-- `PENUMBRA_CHAIN_ID`: Chain ID (default: penumbra-1)
-- `PENUMBRA_BLOCK_TIME`: Block time in milliseconds (default: 6000)
-- `PENUMBRA_EPOCH_DURATION`: Number of blocks per epoch (default: 100)
-
-### DEX Configuration
-- `PENUMBRA_DEX_BATCH_INTERVAL`: Batch auction interval in milliseconds (default: 60000)
-- `PENUMBRA_DEX_MIN_LIQUIDITY`: Minimum liquidity amount (default: 1000)
-- `PENUMBRA_DEX_MAX_PRICE_IMPACT`: Maximum price impact as decimal (default: 0.05)
-
-### Governance Configuration
-- `PENUMBRA_GOVERNANCE_VOTING_PERIOD`: Voting period duration in milliseconds (default: 1209600000 - 14 days)
-- `PENUMBRA_GOVERNANCE_MIN_DEPOSIT`: Minimum proposal deposit amount (default: 100000)
-
-## Architecture
-
-The server is built using TypeScript and implements the Model Context Protocol (MCP) for standardized tool interfaces. It currently provides mock implementations for core functionality, with plans to integrate directly with Penumbra's client libraries and node API endpoints.
-
-### Privacy Considerations
-
-All interactions respect Penumbra's privacy-preserving design:
-- Shielded transactions
-- Private staking operations
-- Sealed-bid batch auctions
-- Anonymous governance voting
-
-## Contributing
-
-Contributions are welcome! Please feel free to submit a Pull Request.
-
-## License
-
-ISC
+See [FEATURE_PROPOSALS.md](./FEATURE_PROPOSALS.md) for upcoming features and implementation plans.

@@ -1,0 +1,21 @@
+{
+  "name": "@penumbra/view-mcp",
+  "version": "0.1.0",
+  "description": "MCP server providing View Service interface for Penumbra",
+  "main": "build/index.js",
+  "type": "module",
+  "scripts": {
+    "build": "tsc && chmod +x build/index.js",
+    "start": "node build/index.js",
+    "test": "jest"
+  },
+  "dependencies": {
+    "@modelcontextprotocol/sdk": "^0.1.0",
+    "@penumbra-zone/core": "^0.1.0"
+  },
+  "devDependencies": {
+    "typescript": "^5.0.0",
+    "jest": "^29.0.0",
+    "@types/node": "^20.0.0"
+  }
+}

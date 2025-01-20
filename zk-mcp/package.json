@@ -1,0 +1,23 @@
+{
+  "name": "@penumbra/zk-mcp",
+  "version": "0.1.0",
+  "description": "MCP server for Penumbra zero-knowledge proof operations",
+  "main": "build/index.js",
+  "type": "module",
+  "scripts": {
+    "build": "tsc && chmod +x build/index.js",
+    "start": "node build/index.js",
+    "test": "jest"
+  },
+  "dependencies": {
+    "@modelcontextprotocol/sdk": "^0.1.0",
+    "@penumbra-zone/core": "^0.1.0",
+    "poseidon377": "^0.1.0",
+    "arkworks-wasm": "^0.1.0"
+  },
+  "devDependencies": {
+    "typescript": "^5.0.0",
+    "jest": "^29.0.0",
+    "@types/node": "^20.0.0"
+  }
+}
