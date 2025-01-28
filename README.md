@@ -1,4 +1,5 @@
 # Penumbra MCP Server
+[![smithery badge](https://smithery.ai/badge/@timeheater/penumbra-mcp)](https://smithery.ai/server/@timeheater/penumbra-mcp)
 
 An MCP server providing tools for interacting with the Penumbra blockchain. This server enables privacy-preserving interactions with Penumbra's core features including transaction queries, validator set information, DEX state, and governance proposals.
 
@@ -22,6 +23,15 @@ An MCP server providing tools for interacting with the Penumbra blockchain. This
 
 ## Installation
 
+### Installing via Smithery
+
+To install Penumbra MCP Server for Claude Desktop automatically via [Smithery](https://smithery.ai/server/@timeheater/penumbra-mcp):
+
+```bash
+npx -y @smithery/cli install @timeheater/penumbra-mcp --client claude
+```
+
+### Manual Installation
 You can install the package via npm:
 
 ```bash
