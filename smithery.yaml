@@ -1,0 +1,61 @@
+# Smithery configuration file: https://smithery.ai/docs/config#smitheryyaml
+
+startCommand:
+  type: stdio
+  configSchema:
+    # JSON Schema defining the configuration options for the MCP.
+    type: object
+    required:
+      - penumbraNodeUrl
+      - penumbraNetwork
+      - penumbraChainId
+      - penumbraRequestTimeout
+      - penumbraRequestRetries
+      - penumbraBlockTime
+      - penumbraEpochDuration
+      - penumbraDexBatchInterval
+      - penumbraDexMinLiquidity
+      - penumbraDexMaxPriceImpact
+      - penumbraGovernanceVotingPeriod
+      - penumbraGovernanceMinDeposit
+    properties:
+      penumbraNodeUrl:
+        type: string
+        description: URL of the Penumbra node
+      penumbraNetwork:
+        type: string
+        description: Network to connect to
+      penumbraChainId:
+        type: string
+        description: Chain ID
+      penumbraRequestTimeout:
+        type: number
+        description: HTTP request timeout in milliseconds
+      penumbraRequestRetries:
+        type: number
+        description: Number of request retries
+      penumbraBlockTime:
+        type: number
+        description: Block time in milliseconds
+      penumbraEpochDuration:
+        type: number
+        description: Number of blocks per epoch
+      penumbraDexBatchInterval:
+        type: number
+        description: Batch auction interval in milliseconds
+      penumbraDexMinLiquidity:
+        type: number
+        description: Minimum liquidity amount
+      penumbraDexMaxPriceImpact:
+        type: number
+        description: Maximum price impact as decimal
+      penumbraGovernanceVotingPeriod:
+        type: number
+        description: Voting period duration in milliseconds
+      penumbraGovernanceMinDeposit:
+        type: number
+        description: Minimum proposal deposit amount
+  commandFunction:
+    # A function that produces the CLI command to start the MCP on stdio.
+    |-
+    (config) => ({command:'node', args:['build/index.js'], env:{PENUMBRA_NODE_URL: config.penumbraNodeUrl, PENUMBRA_NETWORK: config.penumbraNetwork, PENUMBRA_CHAIN_ID: config.penumbraChainId, PENUMBRA_REQUEST_TIMEOUT: config.penumbraRequestTimeout, PENUMBRA_REQUEST_RETRIES: config.penumbraRequestRetries, PENUMBRA_BLOCK_TIME: config.penumbraBlockTime, PENUMBRA_EPOCH_DURATION: config.penumbraEpochDuration, PENUMBRA_DEX_BATCH_INTERVAL: config.penumbraDexBatchInterval, PENUMBRA_DEX_MIN_LIQUIDITY: config.penumbraDexMinLiquidity, PENUMBRA_DEX_MAX_PRICE_IMPACT: config.penumbraDexMaxPriceImpact, PENUMBRA_GOVERNANCE_VOTING_PERIOD: config.penumbraGovernanceVotingPeriod, PENUMBRA_GOVERNANCE_MIN_DEPOSIT: config.penumbraGovernanceMinDeposit}})
