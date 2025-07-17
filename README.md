@@ -1,3 +1,5 @@
+[![MseeP.ai Security Assessment Badge](https://mseep.net/pr/bmorphism-penumbra-mcp-badge.png)](https://mseep.ai/app/bmorphism-penumbra-mcp)
+
 # Penumbra MCP Server
 
 An MCP server providing tools for interacting with the Penumbra blockchain. This server enables privacy-preserving interactions with Penumbra's core features including transaction queries, validator set information, DEX state, and governance proposals.
